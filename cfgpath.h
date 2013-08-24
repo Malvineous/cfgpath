@@ -22,7 +22,7 @@
 #ifndef CFGPATH_H_
 #define CFGPATH_H_
 
-#ifdef LINUX
+#ifdef __linux__
 #include <string.h>
 #include <stdlib.h>
 #define MAX_PATH 512  /* arbitrary value */
@@ -60,7 +60,7 @@
  */
 inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef LINUX
+#ifdef __linux__
 	char *home = getenv("XDG_CONFIG_HOME");
 	int config_len = 0;
 	if (!home) {
@@ -144,7 +144,7 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
  */
 inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef LINUX
+#ifdef __linux__
 	char *home = getenv("XDG_CONFIG_HOME");
 	int config_len = 0;
 	if (!home) {
@@ -232,7 +232,7 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
  */
 inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef LINUX
+#ifdef __linux__
 	char *home = getenv("XDG_DATA_HOME");
 	int config_len = 0;
 	if (!home) {
@@ -308,7 +308,7 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
  */
 inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef LINUX
+#ifdef __linux__
 	char *home = getenv("XDG_CACHE_HOME");
 	int config_len = 0;
 	if (!home) {
