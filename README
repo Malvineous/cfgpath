@@ -12,6 +12,8 @@ purpose.  If you add new platform support, please contribute a patch!
 
 Basic use:
 
+    #include "cfgpath.h"
+    
     char cfgdir[MAX_PATH];
     get_user_config_file(cfgdir, sizeof(cfgdir), "myapp");
     if (cfgdir[0] == 0) {
