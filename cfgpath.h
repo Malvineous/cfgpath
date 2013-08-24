@@ -62,7 +62,7 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
 {
 #ifdef __linux__
 	char *home = getenv("XDG_CONFIG_HOME");
-	int config_len = 0;
+	unsigned int config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -73,8 +73,8 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
 		config_len = strlen(".config/");
 	}
 
-	int home_len = strlen(home);
-	int appname_len = strlen(appname);
+	unsigned int home_len = strlen(home);
+	unsigned int appname_len = strlen(appname);
 	const int ext_len = strlen(".conf");
 
 	/* first +1 is "/", second is terminating null */
@@ -105,7 +105,7 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
 		out[0] = 0;
 		return;
 	}
-	int appname_len = strlen(appname);
+	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + strlen(".ini") + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -146,7 +146,7 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 {
 #ifdef __linux__
 	char *home = getenv("XDG_CONFIG_HOME");
-	int config_len = 0;
+	unsigned int config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -157,8 +157,8 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 		config_len = strlen(".config/");
 	}
 
-	int home_len = strlen(home);
-	int appname_len = strlen(appname);
+	unsigned int home_len = strlen(home);
+	unsigned int appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -188,7 +188,7 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 		out[0] = 0;
 		return;
 	}
-	int appname_len = strlen(appname);
+	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -234,7 +234,7 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
 {
 #ifdef __linux__
 	char *home = getenv("XDG_DATA_HOME");
-	int config_len = 0;
+	unsigned int config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -245,8 +245,8 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
 		config_len = strlen(".local/share/");
 	}
 
-	int home_len = strlen(home);
-	int appname_len = strlen(appname);
+	unsigned int home_len = strlen(home);
+	unsigned int appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -310,7 +310,7 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 {
 #ifdef __linux__
 	char *home = getenv("XDG_CACHE_HOME");
-	int config_len = 0;
+	unsigned int config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -321,8 +321,8 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 		config_len = strlen(".cache/");
 	}
 
-	int home_len = strlen(home);
-	int appname_len = strlen(appname);
+	unsigned int home_len = strlen(home);
+	unsigned int appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -352,7 +352,7 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 		out[0] = 0;
 		return;
 	}
-	int appname_len = strlen(appname);
+	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
