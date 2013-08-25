@@ -36,6 +36,7 @@
 #ifdef __linux__
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #define MAX_PATH 512  /* arbitrary value */
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
@@ -71,11 +72,12 @@
  *   use lowercase if possible.
  *
  * @post The file may or may not exist.
- * @post The folder may or may not exist!  This should be fixed.
+ * @post The folder holding the file is created if needed.
  */
 inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
+	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
 	unsigned int config_len = 0;
 	if (!home) {
@@ -105,6 +107,8 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
 	if (config_len) {
 		memcpy(out, ".config/", config_len);
 		out += config_len;
+		/* Make the .config folder if it doesn't already exist */
+		mkdir(out_orig, 0755);
 	}
 	memcpy(out, appname, appname_len);
 	out += appname_len;
@@ -120,6 +124,7 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
 		out[0] = 0;
 		return;
 	}
+	/* We don't try to create the AppData folder as it always exists already */
 	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + strlen(".ini") + 1 > maxlen) {
 		out[0] = 0;
@@ -156,10 +161,13 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
  * @param appname
  *   Short name of the application.  Avoid using spaces or version numbers, and
  *   use lowercase if possible.
+ *
+ * @post The folder is created if needed.
  */
 inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
+	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
 	unsigned int config_len = 0;
 	if (!home) {
@@ -188,9 +196,15 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 	if (config_len) {
 		memcpy(out, ".config/", config_len);
 		out += config_len;
+		/* Make the .config folder if it doesn't already exist */
+		*out = '\0';
+		mkdir(out_orig, 0755);
 	}
 	memcpy(out, appname, appname_len);
 	out += appname_len;
+	/* Make the .config/appname folder if it doesn't already exist */
+	*out = '\0';
+	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
 	*out = 0;
@@ -203,6 +217,7 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 		out[0] = 0;
 		return;
 	}
+	/* We don't try to create the AppData folder as it always exists already */
 	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
@@ -210,6 +225,8 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
 	}
 	strcat(out, "\\");
 	strcat(out, appname);
+	/* Make the AppData\appname folder if it doesn't already exist */
+	mkdir(out);
 	strcat(out, "\\");
 #endif
 }
@@ -244,10 +261,13 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
  * @param appname
  *   Short name of the application.  Avoid using spaces or version numbers, and
  *   use lowercase if possible.
+ *
+ * @post The folder is created if needed.
  */
 inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
+	const char *out_orig = out;
 	char *home = getenv("XDG_DATA_HOME");
 	unsigned int config_len = 0;
 	if (!home) {
@@ -276,9 +296,15 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
 	if (config_len) {
 		memcpy(out, ".local/share/", config_len);
 		out += config_len;
+		/* Make the .local/share folder if it doesn't already exist */
+		*out = '\0';
+		mkdir(out_orig, 0755);
 	}
 	memcpy(out, appname, appname_len);
 	out += appname_len;
+	/* Make the .local/share/appname folder if it doesn't already exist */
+	*out = '\0';
+	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
 	*out = 0;
@@ -320,10 +346,13 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
  * @param appname
  *   Short name of the application.  Avoid using spaces or version numbers, and
  *   use lowercase if possible.
+ *
+ * @post The folder is created if needed.
  */
 inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
+	const char *out_orig = out;
 	char *home = getenv("XDG_CACHE_HOME");
 	unsigned int config_len = 0;
 	if (!home) {
@@ -352,9 +381,15 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 	if (config_len) {
 		memcpy(out, ".cache/", config_len);
 		out += config_len;
+		/* Make the .cache folder if it doesn't already exist */
+		*out = '\0';
+		mkdir(out_orig, 0755);
 	}
 	memcpy(out, appname, appname_len);
 	out += appname_len;
+	/* Make the .cache/appname folder if it doesn't already exist */
+	*out = '\0';
+	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
 	*out = 0;
@@ -367,6 +402,7 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 		out[0] = 0;
 		return;
 	}
+	/* We don't try to create the AppData folder as it always exists already */
 	unsigned int appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
@@ -374,6 +410,8 @@ inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *ap
 	}
 	strcat(out, "\\");
 	strcat(out, appname);
+	/* Make the AppData\appname folder if it doesn't already exist */
+	mkdir(out);
 	strcat(out, "\\");
 #endif
 }

@@ -11,9 +11,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#define LINUX
+#ifndef __linux__
+#define __linux__
+#endif
 #undef WIN32
 #define getenv test_getenv
+#define mkdir test_mkdir
 #include "cfgpath.h"
 
 int test_env_xdg_valid;  /* Does $XDG_CONFIG_HOME exist? */
@@ -32,6 +35,11 @@ char *test_getenv(const char *var)
 		return getenv_buffer;
 	}
 	return NULL;
+}
+
+int test_mkdir(const char *path, mode_t mode)
+{
+	return 0;
 }
 
 #define TOSTRING_X(x) #x

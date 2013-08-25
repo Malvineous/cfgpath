@@ -12,8 +12,11 @@
 #include <stdio.h>
 
 #define SHGetFolderPath test_SHGetFolderPath
-#undef LINUX
+#define mkdir test_mkdir
+#undef __linux__
+#ifndef WIN32
 #define WIN32
+#endif
 #include "cfgpath.h"
 
 const char *set_appdata;
@@ -42,6 +45,11 @@ int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 			break;
 	}
 	return E_FAIL;
+}
+
+int test_mkdir(const char *path)
+{
+	return 0;
 }
 
 #define TOSTRING_X(x) #x
