@@ -17,6 +17,17 @@
  * }
  * printf("Saving configuration file to %s\n", cfgdir);
  *
+ * A number of constants are also defined:
+ *
+ *  - MAX_PATH: Maximum length of a path, in characters.  Used to allocate a
+ *      char array large enough to hold the returned path.
+ *
+ *  - PATH_SEPARATOR_CHAR: The separator between folders.  This will be either a
+ *      forward slash or a backslash depending on the platform.  This is a
+ *      character constant.
+ *
+ *  - PATH_SEPARATOR_STRING: The same as PATH_SEPARATOR_CHAR but as a C string,
+ *      to make it easier to append to other string constants.
  */
 
 #ifndef CFGPATH_H_
@@ -26,9 +37,13 @@
 #include <string.h>
 #include <stdlib.h>
 #define MAX_PATH 512  /* arbitrary value */
+#define PATH_SEPARATOR_CHAR '/'
+#define PATH_SEPARATOR_STRING "/"
 #elif defined(WIN32)
 #include <shlobj.h>
 /* MAX_PATH is defined by the Windows API */
+#define PATH_SEPARATOR_CHAR '\\'
+#define PATH_SEPARATOR_STRING "\\"
 #else
 #error cfgpath.h functions have not been implemented for your platform!  Please send patches.
 #endif
