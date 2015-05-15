@@ -33,6 +33,12 @@
 #ifndef CFGPATH_H_
 #define CFGPATH_H_
 
+#ifdef _MSC_VER
+#define inline __inline
+#include <direct.h>
+#define mkdir _mkdir
+#endif
+
 #ifdef __linux__
 #include <string.h>
 #include <stdlib.h>
@@ -310,7 +316,7 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
 	*out = 0;
 #elif defined(WIN32)
 	/* No distinction under Windows */
-	return get_user_config_folder(out, maxlen, appname);
+	get_user_config_folder(out, maxlen, appname);
 #endif
 }
 
