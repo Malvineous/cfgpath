@@ -32,6 +32,7 @@ unless you intend to make changes and send me a patch.
 Supported platforms are currently:
 
   * Linux
+  * Mac OS X
   * Windows
 
 Patches adding support for more platforms would be greatly appreciated.
