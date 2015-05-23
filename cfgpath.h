@@ -37,8 +37,6 @@
 #define inline __inline
 #include <direct.h>
 #define mkdir _mkdir
-#elif defined(__clang__)
-#define inline static inline
 #endif
 
 #ifdef __linux__
@@ -88,7 +86,7 @@
  * @post The file may or may not exist.
  * @post The folder holding the file is created if needed.
  */
-inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -194,7 +192,7 @@ inline void get_user_config_file(char *out, unsigned int maxlen, const char *app
  *
  * @post The folder is created if needed.
  */
-inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -311,7 +309,7 @@ inline void get_user_config_folder(char *out, unsigned int maxlen, const char *a
  *
  * @post The folder is created if needed.
  */
-inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -396,7 +394,7 @@ inline void get_user_data_folder(char *out, unsigned int maxlen, const char *app
  *
  * @post The folder is created if needed.
  */
-inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
