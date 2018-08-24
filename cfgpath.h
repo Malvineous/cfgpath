@@ -128,6 +128,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	out += ext_len;
 	*out = 0;
 #elif defined(WIN32)
+    unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -137,7 +138,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + strlen(".ini") + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -237,6 +238,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	out++;
 	*out = 0;
 #elif defined(WIN32)
+    unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -246,7 +248,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -439,6 +441,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	out++;
 	*out = 0;
 #elif defined(WIN32)
+    unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -448,7 +451,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
