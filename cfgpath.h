@@ -128,7 +128,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	out += ext_len;
 	*out = 0;
 #elif defined(WIN32)
-    unsigned int appname_len;
+	unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -238,7 +238,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	out++;
 	*out = 0;
 #elif defined(WIN32)
-    unsigned int appname_len;
+	unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -441,7 +441,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	out++;
 	*out = 0;
 #elif defined(WIN32)
-    unsigned int appname_len;
+	unsigned int appname_len;
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
