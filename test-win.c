@@ -32,10 +32,10 @@ int set_retval;
 int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 	int dwFlags, char *pszPath)
 {
-    // silence unused variable warnings
-    (void)hwndOwner;
-    (void)hToken;
-    (void)dwFlags;
+	// silence unused variable warnings
+	(void)hwndOwner;
+	(void)hToken;
+	(void)dwFlags;
 
 	/* Hopefully trigger an error if the buffer is too small */
 	pszPath[MAX_PATH - 1] = 0;
@@ -60,7 +60,7 @@ int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 int test_mkdir(const char *path)
 {
 	return 0;
-    (void)path; // silence unused variable warning
+	(void)path; // silence unused variable warning
 }
 
 #define TOSTRING_X(x) #x
