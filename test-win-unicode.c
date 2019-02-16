@@ -32,13 +32,13 @@ int set_retval;
 int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 	int dwFlags, void *_pszPath)
 {
-    // silence unused variable warnings
-    (void)hwndOwner;
-    (void)hToken;
-    (void)dwFlags;
+	// silence unused variable warnings
+	(void)hwndOwner;
+	(void)hToken;
+	(void)dwFlags;
 
 	/* Hopefully trigger an error if the buffer is too small */
-    cfgpathchar_t *pszPath = (cfgpathchar_t*) _pszPath;
+	cfgpathchar_t *pszPath = (cfgpathchar_t*) _pszPath;
 	pszPath[MAX_PATH - 1] = 0;
 
 	switch (nFolder) {
@@ -61,7 +61,7 @@ int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 int test_mkdir(void *path)
 {
 	return 0;
-    (void)path; // silence unused variable warning
+	(void)path; // silence unused variable warning
 }
 
 int main(void)
@@ -69,36 +69,36 @@ int main(void)
 	cfgpathchar_t buffer[MAX_PATH];
 
 // get_user_config_file
-    get_user_config_file(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
-    if (buffer[0] == 0) {
-        printf("get_user_config_file() fail\n");
-        return 1;
-    }
-    cfgpath__printf(CFGPATHTEXT("get_user_config_file() returned '%s'!\n"), buffer);
+	get_user_config_file(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
+	if (buffer[0] == 0) {
+		printf("get_user_config_file() fail\n");
+		return 1;
+	}
+	cfgpath__printf(CFGPATHTEXT("get_user_config_file() returned '%s'!\n"), buffer);
 
 // get_user_config_folder
-    get_user_config_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
-    if (buffer[0] == 0) {
-        printf("get_user_config_folder() fail\n");
-        return 1;
-    }
-    cfgpath__printf(CFGPATHTEXT("get_user_config_folder() returned '%s'!\n"), buffer);
+	get_user_config_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
+	if (buffer[0] == 0) {
+		printf("get_user_config_folder() fail\n");
+		return 1;
+	}
+	cfgpath__printf(CFGPATHTEXT("get_user_config_folder() returned '%s'!\n"), buffer);
 
 // get_user_data_folder
-    get_user_data_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
-    if (buffer[0] == 0) {
-        printf("get_user_data_folder() fail\n");
-        return 1;
-    }
-    cfgpath__printf(CFGPATHTEXT("get_user_data_folder() returned '%s'!\n"), buffer);
+	get_user_data_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
+	if (buffer[0] == 0) {
+		printf("get_user_data_folder() fail\n");
+		return 1;
+	}
+	cfgpath__printf(CFGPATHTEXT("get_user_data_folder() returned '%s'!\n"), buffer);
 
 // get_user_cache_folder
-    get_user_cache_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
-    if (buffer[0] == 0) {
-        printf("get_user_cache_folder() fail\n");
-        return 1;
-    }
-    cfgpath__printf(CFGPATHTEXT("get_user_cache_folder() returned '%s'!\n"), buffer);
+	get_user_cache_folder(buffer, sizeof(buffer)/sizeof(buffer[0]), CFGPATHTEXT("myapp"));
+	if (buffer[0] == 0) {
+		printf("get_user_cache_folder() fail\n");
+		return 1;
+	}
+	cfgpath__printf(CFGPATHTEXT("get_user_cache_folder() returned '%s'!\n"), buffer);
 
 	printf("All tests passed for platform: Windows (Unicode).\n");
 	return 0;
