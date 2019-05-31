@@ -48,8 +48,14 @@ if (config_folder_path == "")
 
 ```
 
-To integrate it into your own project, just copy cfgpath.h.
-Or clone the project as a submodule of your project, then use **add_subdirectory** to add the subfolder as an externl dependency.
+To integrate it into your own project:
+
+* Just copy the **include** folder into your own project.
+
+* Or clone the project as a submodule of your project
+  1. Add the **include** folder as an 'additional include directory' of your project;
+
+  2. If you are using CMake, you can use **add_subdirectory** to add the cloned submodule folder as an externl dependency, and link your project with the **cfgpath** library. Of course, you can also choose to use the **header only mode** by setting the **CFGPATH_HEADER_ONLY** variable.
 
 All the other files are for testing to make sure it works correctly, so you don't need them unless you intend to make changes and send me a patch.
 

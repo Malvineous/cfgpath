@@ -20,6 +20,8 @@
 #else
 #define CFGPATH_FUNC static inline
 #endif
+#else
+#define CFGPATH_FUNC
 #endif
 
 #include <stdlib.h>

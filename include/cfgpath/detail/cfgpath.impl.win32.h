@@ -25,6 +25,8 @@
 #else
 #define CFGPATH_FUNC static inline
 #endif
+#else
+#define CFGPATH_FUNC
 #endif
 
 #if !defined(CFGPATH_HEADER_ONLY) && !defined(WIN32_LEAN_AND_MEAN)
