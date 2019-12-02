@@ -9,13 +9,20 @@
  *
  * Example use:
  *
- * char cfgdir[256];
- * get_user_config_file(cfgdir, sizeof(cfgdir), "myapp");
+ * cfgpathchar_t cfgdir[256];
+ * get_user_config_file(cfgdir, sizeof(cfgdir)/sizeof(cfgdir[0]), CFGPATHTEXT("myapp"));
  * if (cfgdir[0] == 0) {
  *     printf("Unable to find home directory.\n");
  *     return 1;
  * }
- * printf("Saving configuration file to %s\n", cfgdir);
+ * cfgpath__printf(CFGPATHTEXT("Saving configuration file to %s\n"), cfgdir);
+ *
+ * The CFGPATHTEXT macro will prefix strings with L if building for Win32 with
+ * UNICODE #defined. Similarly, cfgpath__printf(), cfgpath__strcat(), etc. will
+ * use the Win32 wchar_t functions, and cfgpathchar_t will resolve to the wchar_t
+ * data type. Otherwise, UTF-8 is assumed and the standard C library functions are
+ * used along with the char data type. For maximum portability between platforms
+ * and encodings, use these macros.
  *
  * A number of constants are also defined:
  *
@@ -32,6 +39,18 @@
 
 #ifndef CFGPATH_H_
 #define CFGPATH_H_
+
+#if defined(WIN32) && defined(UNICODE)
+#define CFGPATHTEXT(q) L##q
+#else
+#define CFGPATHTEXT(q) q
+#endif
+
+#define cfgpath__strlen strlen
+#define cfgpath__strcat strcat
+#define cfgpath__strcpy strcpy
+#define cfgpath__strcmp strcmp
+#define cfgpath__printf printf
 
 #ifdef _MSC_VER
 #define inline __inline
@@ -50,7 +69,22 @@
 #include <shlobj.h>
 /* MAX_PATH is defined by the Windows API */
 #define PATH_SEPARATOR_CHAR '\\'
-#define PATH_SEPARATOR_STRING "\\"
+#define PATH_SEPARATOR_STRING CFGPATHTEXT("\\")
+#ifdef UNICODE // will use wchar_t types in this instance
+#define CFGPATH_WIN32_UNICODE
+#define HAVE_CFGPATHCHAR_T
+typedef wchar_t cfgpathchar_t;
+#undef cfgpath__strlen
+#undef cfgpath__strcat
+#undef cfgpath__strcpy
+#undef cfgpath__strcmp
+#undef cfgpath__printf
+#define cfgpath__strlen wcslen
+#define cfgpath__strcat wcscat
+#define cfgpath__strcpy wcscpy
+#define cfgpath__strcmp wcscmp
+#define cfgpath__printf wprintf
+#endif // UNICODE
 #elif defined(__APPLE__)
 #include <CoreServices/CoreServices.h>
 #include <sys/stat.h>
@@ -59,6 +93,10 @@
 #define PATH_SEPARATOR_STRING "/"
 #else
 #error cfgpath.h functions have not been implemented for your platform!  Please send patches.
+#endif
+
+#ifndef HAVE_CFGPATHCHAR_T
+typedef char cfgpathchar_t;
 #endif
 
 /** Get an absolute path to a single configuration file, specific to this user.
@@ -86,7 +124,7 @@
  * @post The file may or may not exist.
  * @post The folder holding the file is created if needed.
  */
-static inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_config_file(cfgpathchar_t *out, unsigned int maxlen, const cfgpathchar_t *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -137,14 +175,14 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
-	if (strlen(out) + 1 + appname_len + strlen(".ini") + 1 > maxlen) {
+	unsigned int appname_len = cfgpath__strlen(appname);
+	if (cfgpath__strlen(out) + 1 + appname_len + cfgpath__strlen(CFGPATHTEXT(".ini")) + 1 > maxlen) {
 		out[0] = 0;
 		return;
 	}
-	strcat(out, "\\");
-	strcat(out, appname);
-	strcat(out, ".ini");
+	cfgpath__strcat(out, PATH_SEPARATOR_STRING);
+	cfgpath__strcat(out, appname);
+	cfgpath__strcat(out, CFGPATHTEXT(".ini"));
 #elif defined(__APPLE__)
 	FSRef ref;
 	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
@@ -192,7 +230,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
  *
  * @post The folder is created if needed.
  */
-static inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_config_folder(cfgpathchar_t *out, unsigned int maxlen, const cfgpathchar_t *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -246,16 +284,16 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
-	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
+	unsigned int appname_len = cfgpath__strlen(appname);
+	if (cfgpath__strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
 	}
-	strcat(out, "\\");
-	strcat(out, appname);
+	cfgpath__strcat(out, PATH_SEPARATOR_STRING);
+	cfgpath__strcat(out, appname);
 	/* Make the AppData\appname folder if it doesn't already exist */
 	mkdir(out);
-	strcat(out, "\\");
+	cfgpath__strcat(out, PATH_SEPARATOR_STRING);
 #elif defined(__APPLE__)
 	FSRef ref;
 	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
@@ -309,7 +347,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
  *
  * @post The folder is created if needed.
  */
-static inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_data_folder(cfgpathchar_t *out, unsigned int maxlen, const cfgpathchar_t *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -394,7 +432,7 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
  *
  * @post The folder is created if needed.
  */
-static inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
+static inline void get_user_cache_folder(cfgpathchar_t *out, unsigned int maxlen, const cfgpathchar_t *appname)
 {
 #ifdef __linux__
 	const char *out_orig = out;
@@ -448,16 +486,16 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
-	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
+	unsigned int appname_len = cfgpath__strlen(appname);
+	if (cfgpath__strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
 	}
-	strcat(out, "\\");
-	strcat(out, appname);
+	cfgpath__strcat(out, PATH_SEPARATOR_STRING);
+	cfgpath__strcat(out, appname);
 	/* Make the AppData\appname folder if it doesn't already exist */
 	mkdir(out);
-	strcat(out, "\\");
+	cfgpath__strcat(out, PATH_SEPARATOR_STRING);
 #elif defined(__APPLE__)
 	/* No distinction under OS X */
 	get_user_config_folder(out, maxlen, appname);

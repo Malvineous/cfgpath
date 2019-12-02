@@ -1,6 +1,6 @@
 /**
- * @file  test-linux.c
- * @brief cfgpath.h test code for the Linux platform.
+ * @file  test-win.c
+ * @brief cfgpath.h test code for the Windows platform.
  *
  * Copyright (C) 2013 Adam Nielsen <malvineous@shikadi.net>
  *
@@ -13,9 +13,14 @@
 
 #define SHGetFolderPath test_SHGetFolderPath
 #define mkdir test_mkdir
+int test_mkdir(const char *path);
+int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken, int dwFlags, char *pszPath);
 #undef __linux__
 #ifndef WIN32
 #define WIN32
+#endif
+#ifdef UNICODE
+#undef UNICODE // try test-win-unicode.c if you want a unicode example
 #endif
 #include "cfgpath.h"
 
@@ -27,6 +32,11 @@ int set_retval;
 int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 	int dwFlags, char *pszPath)
 {
+	// silence unused variable warnings
+	(void)hwndOwner;
+	(void)hToken;
+	(void)dwFlags;
+
 	/* Hopefully trigger an error if the buffer is too small */
 	pszPath[MAX_PATH - 1] = 0;
 
@@ -50,16 +60,17 @@ int test_SHGetFolderPath(void *hwndOwner, int nFolder, void *hToken,
 int test_mkdir(const char *path)
 {
 	return 0;
+	(void)path; // silence unused variable warning
 }
 
 #define TOSTRING_X(x) #x
 #define TOSTRING(x) TOSTRING_X(x)
 #define RUN_TEST(result, msg)	  \
-	TEST_FUNC(buffer, sizeof(buffer), "test-win"); \
+	TEST_FUNC(buffer, sizeof(buffer)/sizeof(buffer[0]), "test-win"); \
 	CHECK_RESULT(result, msg)
 
 #define CHECK_RESULT(result, msg) \
-	if (strcmp(buffer, result) != 0) { \
+	if (cfgpath__strcmp(buffer, result) != 0) { \
 		printf("FAIL: %s:%d " TOSTRING(TEST_FUNC) "() " msg "  Test failed, " \
 			"returning the wrong value.\n" \
 			"Expected: %s\nGot: %s\n", __FILE__, __LINE__, result, buffer); \
@@ -68,9 +79,9 @@ int test_mkdir(const char *path)
 		printf("PASS: " TOSTRING(TEST_FUNC) "() " msg "\n"); \
 	}
 
-int main(int argc, char *argv[])
+int main(void)
 {
-	char buffer[256];
+	cfgpathchar_t buffer[MAX_PATH];
 
 /*
  * get_user_config_file()

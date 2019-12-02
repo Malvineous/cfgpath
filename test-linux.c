@@ -40,12 +40,15 @@ char *test_getenv(const char *var)
 int test_mkdir(const char *path, mode_t mode)
 {
 	return 0;
+	// silence unused variable warnings
+	(void)path;
+	(void)mode;
 }
 
 #define TOSTRING_X(x) #x
 #define TOSTRING(x) TOSTRING_X(x)
 #define RUN_TEST(result, msg)	  \
-	TEST_FUNC(buffer, sizeof(buffer), "test-linux"); \
+	TEST_FUNC(buffer, sizeof(buffer)/sizeof(buffer[0]), "test-linux"); \
 	CHECK_RESULT(result, msg)
 
 #define CHECK_RESULT(result, msg) \
@@ -57,9 +60,9 @@ int test_mkdir(const char *path, mode_t mode)
 		printf("PASS: " TOSTRING(TEST_FUNC) "() " msg "\n"); \
 	}
 
-int main(int argc, char *argv[])
+int main(void)
 {
-	char buffer[256];
+	cfgpathchar_t buffer[MAX_PATH];
 
 /*
  * get_user_config_file()
