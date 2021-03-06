@@ -39,7 +39,12 @@
 #define mkdir _mkdir
 #endif
 
-#ifdef __linux__
+#ifdef __unix__
+#include <sys/param.h>
+#endif
+
+#if defined(__linux__) || defined(BSD)
+#define CFGPATH_LINUX
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -47,11 +52,13 @@
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
 #elif defined(WIN32)
+#define CFGPATH_WINDOWS
 #include <shlobj.h>
 /* MAX_PATH is defined by the Windows API */
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR_STRING "\\"
 #elif defined(__APPLE__)
+#define CFGPATH_MAC
 #include <CoreServices/CoreServices.h>
 #include <sys/stat.h>
 #define MAX_PATH PATH_MAX
@@ -88,7 +95,7 @@
  */
 static inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef __linux__
+#ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
 	unsigned int config_len = 0;
@@ -127,7 +134,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	memcpy(out, ".conf", ext_len);
 	out += ext_len;
 	*out = 0;
-#elif defined(WIN32)
+#elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -145,7 +152,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	strcat(out, "\\");
 	strcat(out, appname);
 	strcat(out, ".ini");
-#elif defined(__APPLE__)
+#elif defined(CFGPATH_MAC)
 	FSRef ref;
 	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
 	char home[MAX_PATH];
@@ -194,7 +201,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
  */
 static inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef __linux__
+#ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
 	unsigned int config_len = 0;
@@ -236,7 +243,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	*out = '/';
 	out++;
 	*out = 0;
-#elif defined(WIN32)
+#elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -256,7 +263,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	/* Make the AppData\appname folder if it doesn't already exist */
 	mkdir(out);
 	strcat(out, "\\");
-#elif defined(__APPLE__)
+#elif defined(CFGPATH_MAC)
 	FSRef ref;
 	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
 	char home[MAX_PATH];
@@ -311,7 +318,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
  */
 static inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef __linux__
+#ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_DATA_HOME");
 	unsigned int config_len = 0;
@@ -353,7 +360,7 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
 	*out = '/';
 	out++;
 	*out = 0;
-#elif defined(WIN32) || defined(__APPLE__)
+#elif defined(CFGPATH_WINDOWS) || defined(CFGPATH_MAC)
 	/* No distinction under Windows or OS X */
 	get_user_config_folder(out, maxlen, appname);
 #endif
@@ -396,7 +403,7 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
  */
 static inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname)
 {
-#ifdef __linux__
+#ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CACHE_HOME");
 	unsigned int config_len = 0;
@@ -438,7 +445,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	*out = '/';
 	out++;
 	*out = 0;
-#elif defined(WIN32)
+#elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
 		return;
@@ -458,7 +465,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	/* Make the AppData\appname folder if it doesn't already exist */
 	mkdir(out);
 	strcat(out, "\\");
-#elif defined(__APPLE__)
+#elif defined(CFGPATH_MAC)
 	/* No distinction under OS X */
 	get_user_config_folder(out, maxlen, appname);
 #endif
