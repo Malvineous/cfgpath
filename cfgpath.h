@@ -127,6 +127,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 		memcpy(out, ".config/", config_len);
 		out += config_len;
 		/* Make the .config folder if it doesn't already exist */
+		*out = '\0';
 		mkdir(out_orig, 0755);
 	}
 	memcpy(out, appname, appname_len);
