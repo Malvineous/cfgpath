@@ -134,7 +134,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	out += appname_len;
 	memcpy(out, ".conf", ext_len);
 	out += ext_len;
-	*out = 0;
+	*out = '\0';
 #elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
@@ -243,7 +243,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
-	*out = 0;
+	*out = '\0';
 #elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
@@ -360,7 +360,7 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
 	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
-	*out = 0;
+	*out = '\0';
 #elif defined(CFGPATH_WINDOWS) || defined(CFGPATH_MAC)
 	/* No distinction under Windows or OS X */
 	get_user_config_folder(out, maxlen, appname);
@@ -445,7 +445,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	mkdir(out_orig, 0755);
 	*out = '/';
 	out++;
-	*out = 0;
+	*out = '\0';
 #elif defined(CFGPATH_WINDOWS)
 	if (maxlen < MAX_PATH) {
 		out[0] = 0;
