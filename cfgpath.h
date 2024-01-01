@@ -72,6 +72,10 @@
 #error cfgpath.h functions have not been implemented for your platform!  Please send patches.
 #endif
 
+#ifdef __cplusplus
+namespace cfgpath {
+#endif
+
 static inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname);
 static inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname);
 static inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname);
@@ -487,5 +491,9 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	get_user_config_folder(out, maxlen, appname);
 #endif
 }
+
+#ifdef __cplusplus
+} // namespace cfgpath
+#endif
 
 #endif /* CFGPATH_H_ */
