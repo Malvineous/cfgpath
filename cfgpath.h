@@ -59,14 +59,27 @@
 #define PATH_SEPARATOR_STRING "\\"
 #elif defined(__APPLE__)
 #define CFGPATH_MAC
-#include <CoreServices/CoreServices.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/syslimits.h> /* PATH_MAX */
+#include <sysdir.h> /* Apple API */
+#include <glob.h> /* Utility stuff (replace the tilde) */
 #define MAX_PATH PATH_MAX
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR_STRING "/"
 #else
 #error cfgpath.h functions have not been implemented for your platform!  Please send patches.
 #endif
+
+#ifdef __cplusplus
+namespace cfgpath {
+#endif
+
+static inline void get_user_config_file(char *out, unsigned int maxlen, const char *appname);
+static inline void get_user_config_folder(char *out, unsigned int maxlen, const char *appname);
+static inline void get_user_data_folder(char *out, unsigned int maxlen, const char *appname);
+static inline void get_user_cache_folder(char *out, unsigned int maxlen, const char *appname);
 
 /** Get an absolute path to a single configuration file, specific to this user.
  *
@@ -77,7 +90,7 @@
  *
  *   Windows: C:\Users\jcitizen\AppData\Roaming\appname.ini
  *   Linux: /home/jcitizen/.config/appname.conf
- *   Mac: /Users/jcitizen/Library/Application Support/appname.conf
+ *   Mac: /Users/jcitizen/Library/Application Support/appname/appname.conf
  *
  * @param out
  *   Buffer to write the path.  On return will contain the path, or an empty
@@ -154,19 +167,15 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 	strcat(out, appname);
 	strcat(out, ".ini");
 #elif defined(CFGPATH_MAC)
-	FSRef ref;
-	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
-	char home[MAX_PATH];
-	FSRefMakePath(&ref, (UInt8 *)&home, MAX_PATH);
-	/* first +1 is "/", second is terminating null */
 	const char *ext = ".conf";
-	if (strlen(home) + 1 + strlen(appname) + strlen(ext) + 1 > maxlen) {
+	get_user_config_folder(out, maxlen, appname);
+	/* +1 is terminating null */
+	if (strlen(out) + strlen(appname) + strlen(ext) + 1 > maxlen) {
 		out[0] = 0;
 		return;
 	}
 
-	strcpy(out, home);
-	strcat(out, PATH_SEPARATOR_STRING);
+	// final copy
 	strcat(out, appname);
 	strcat(out, ext);
 #endif
@@ -265,22 +274,33 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 	mkdir(out);
 	strcat(out, "\\");
 #elif defined(CFGPATH_MAC)
-	FSRef ref;
-	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
-	char home[MAX_PATH];
-	FSRefMakePath(&ref, (UInt8 *)&home, MAX_PATH);
-	/* first +1 is "/", second is trailing "/", third is terminating null */
-	if (strlen(home) + 1 + strlen(appname) + 1 + 1 > maxlen) {
-		out[0] = 0;
+    const sysdir_search_path_enumeration_state state = sysdir_start_search_path_enumeration(
+        SYSDIR_DIRECTORY_APPLICATION_SUPPORT,
+        SYSDIR_DOMAIN_MASK_USER
+    );
+    if (!sysdir_get_next_search_path_enumeration(state, out)) {
+        out[0] = '\0';
 		return;
-	}
+    }
 
-	strcpy(out, home);
-	strcat(out, PATH_SEPARATOR_STRING);
-	strcat(out, appname);
-	/* Make the .config/appname folder if it doesn't already exist */
-	mkdir(out, 0755);
-	strcat(out, PATH_SEPARATOR_STRING);
+    // Remove the tilde
+    glob_t globbuf;
+    if (glob(out, GLOB_TILDE, NULL, &globbuf) == 0) {
+		/* first +1 is "/", second is trailing "/", third is terminating null */
+		if (strlen(globbuf.gl_pathv[0]) + 1 + strlen(appname) + 1 + 1 > maxlen) {
+			out[0] = '\0';
+			return;
+		}
+
+        // final copy
+        strcpy(out, globbuf.gl_pathv[0]);
+        strcat(out, PATH_SEPARATOR_STRING);
+        strcat(out, appname);
+		/* Make the config folder if it doesn't already exist */
+        mkdir(out, 0755);
+	    strcat(out, PATH_SEPARATOR_STRING);
+    }
+    globfree(&globbuf);
 #endif
 }
 
@@ -471,5 +491,9 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 	get_user_config_folder(out, maxlen, appname);
 #endif
 }
+
+#ifdef __cplusplus
+} // namespace cfgpath
+#endif
 
 #endif /* CFGPATH_H_ */
