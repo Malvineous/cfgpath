@@ -98,7 +98,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 #ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
-	unsigned int config_len = 0;
+	size_t config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -109,9 +109,9 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 		config_len = strlen(".config/");
 	}
 
-	unsigned int home_len = strlen(home);
-	unsigned int appname_len = strlen(appname);
-	const int ext_len = strlen(".conf");
+	size_t home_len = strlen(home);
+	size_t appname_len = strlen(appname);
+	size_t ext_len = strlen(".conf");
 
 	/* first +1 is "/", second is terminating null */
 	if (home_len + 1 + config_len + appname_len + ext_len + 1 > maxlen) {
@@ -145,7 +145,7 @@ static inline void get_user_config_file(char *out, unsigned int maxlen, const ch
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	size_t appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + strlen(".ini") + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -205,7 +205,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 #ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CONFIG_HOME");
-	unsigned int config_len = 0;
+	size_t config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -216,8 +216,8 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 		config_len = strlen(".config/");
 	}
 
-	unsigned int home_len = strlen(home);
-	unsigned int appname_len = strlen(appname);
+	size_t home_len = strlen(home);
+	size_t appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -254,7 +254,7 @@ static inline void get_user_config_folder(char *out, unsigned int maxlen, const 
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	size_t appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
@@ -322,7 +322,7 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
 #ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_DATA_HOME");
-	unsigned int config_len = 0;
+	size_t config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -333,8 +333,8 @@ static inline void get_user_data_folder(char *out, unsigned int maxlen, const ch
 		config_len = strlen(".local/share/");
 	}
 
-	unsigned int home_len = strlen(home);
-	unsigned int appname_len = strlen(appname);
+	size_t home_len = strlen(home);
+	size_t appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -407,7 +407,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 #ifdef CFGPATH_LINUX
 	const char *out_orig = out;
 	char *home = getenv("XDG_CACHE_HOME");
-	unsigned int config_len = 0;
+	size_t config_len = 0;
 	if (!home) {
 		home = getenv("HOME");
 		if (!home) {
@@ -418,8 +418,8 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 		config_len = strlen(".cache/");
 	}
 
-	unsigned int home_len = strlen(home);
-	unsigned int appname_len = strlen(appname);
+	size_t home_len = strlen(home);
+	size_t appname_len = strlen(appname);
 
 	/* first +1 is "/", second is trailing "/", third is terminating null */
 	if (home_len + 1 + config_len + appname_len + 1 + 1 > maxlen) {
@@ -456,7 +456,7 @@ static inline void get_user_cache_folder(char *out, unsigned int maxlen, const c
 		return;
 	}
 	/* We don't try to create the AppData folder as it always exists already */
-	unsigned int appname_len = strlen(appname);
+	size_t appname_len = strlen(appname);
 	if (strlen(out) + 1 + appname_len + 1 + 1 > maxlen) {
 		out[0] = 0;
 		return;
